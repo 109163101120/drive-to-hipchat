@@ -76,7 +76,7 @@ function handleFileChange (file, permissions) {
     db.files.isPublic(file.id).then(function (wasPublic) {
       db.files.setPublic(file.id, true);
 
-      if (isNew() || wasPublic === false) {
+      if (isNew(wasPublic) || wasPublic === false) {
         hipchat.rooms.notifications.send({
           color: 'yellow',
           message: makeHipChatMessage(file),
@@ -90,10 +90,12 @@ function handleFileChange (file, permissions) {
   }
 
   /**
+   * @param {boolean|undefined} wasPublic
    * @return {boolean}
    */
-  function isNew () {
-    return file.createdDate === file.modifiedDate;
+  function isNew (wasPublic) {
+    return file.createdDate === file.modifiedDate
+        && wasPublic === undefined;
   }
 
   /**
