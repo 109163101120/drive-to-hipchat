@@ -1,0 +1,21 @@
+{
+  "author": "Chris Doble <chris@canva.com>",
+  "dependencies": {
+    "bluebird": "^2.9.30",
+    "googleapis": "^2.0.6",
+    "koa": "^0.21.0",
+    "koa-body-parser": "^1.1.2",
+    "koa-route": "^2.4.2",
+    "mustache": "^2.1.2",
+    "node-uuid": "^1.4.2",
+    "pg": "^4.4.0",
+    "request": "^2.58.0"
+  },
+  "engines": {
+    "node": "0.11.x"
+  },
+  "license": "MIT",
+  "main": "src/index",
+  "name": "drive-hipchat",
+  "version": "0.0.0"
+}
