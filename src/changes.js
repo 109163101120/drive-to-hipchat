@@ -90,6 +90,22 @@ function handleFileChange (file, permissions) {
   }
 
   /**
+   * @param {!Object} permission
+   * @param {boolean}
+   */
+  function isDomainPublic (permission) {
+    return permission.type === 'domain' && !permission.withLink;
+  }
+
+  /**
+   * @param {!Object} permission
+   * @return {boolean}
+   */
+  function isGloballyPublic (permission) {
+    return permission.type === 'anyone';
+  }
+
+  /**
    * @param {boolean|undefined} wasPublic
    * @return {boolean}
    */
@@ -103,8 +119,8 @@ function handleFileChange (file, permissions) {
    */
   function isPublic () {
     return permissions.some(function (permission) {
-      return permission.type === 'anyone'
-          || permission.type === 'domain';
+      return isGloballyPublic(permission)
+          || isDomainPublic(permission);
     });
   }
 }
