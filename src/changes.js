@@ -102,7 +102,7 @@ function handleFileChange (file, permissions) {
    * @return {boolean}
    */
   function isGloballyPublic (permission) {
-    return permission.type === 'anyone';
+    return permission.type === 'anyone' && !permisson.withLink;
   }
 
   /**
