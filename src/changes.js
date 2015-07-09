@@ -73,20 +73,9 @@ function handleFileChange (file, permissions) {
   if (!isPublic()) {
     db.files.setPublic(file.id, false);
   } else {
-    db.files.isPublic(file.id).then(function (wasPublic) {
-      db.files.setPublic(file.id, true);
-
-      if (isNew(wasPublic) || wasPublic === false) {
-        hipchat.rooms.notifications.send({
-          color: 'yellow',
-          message: makeHipChatMessage(file),
-          messageFormat: 'html',
-          notify: true,
-          token: configuration.HIPCHAT_NOTIFICATION_TOKEN,
-          roomId: configuration.HIPCHAT_ROOM_ID
-        });
-      }
-    });
+    db.files.isPublic(file.id)
+        .tap(makePublic)
+        .then(maybeSendHipChatNotification);
   }
 
   /**
@@ -106,15 +95,6 @@ function handleFileChange (file, permissions) {
   }
 
   /**
-   * @param {boolean|undefined} wasPublic
-   * @return {boolean}
-   */
-  function isNew (wasPublic) {
-    return file.createdDate === file.modifiedDate
-        && wasPublic === undefined;
-  }
-
-  /**
    * @return {boolean}
    */
   function isPublic () {
@@ -122,6 +102,38 @@ function handleFileChange (file, permissions) {
       return isGloballyPublic(permission)
           || isDomainPublic(permission);
     });
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  function makePublic () {
+    return db.files.setPublic(file.id, true);
+  }
+
+  /**
+   * @param {boolean|undefined} wasPublic
+   */
+  function maybeSendHipChatNotification (wasPublic) {
+    var isNew = file.createdDate === file.modifiedDate && wasPublic === undefined,
+        wasShared = wasPublic === false;
+
+    if (isNew || wasShared) {
+      console.log('Sending HipChat notification');
+      console.log('isNew: ' + isNew);
+      console.log('wasShared: ' + wasShared);
+      console.log(JSON.stringify(file, null, 2));
+      console.log(JSON.stringify(permissions, null, 2));
+
+      hipchat.rooms.notifications.send({
+        color: 'yellow',
+        message: makeHipChatMessage(file),
+        messageFormat: 'html',
+        notify: true,
+        token: configuration.HIPCHAT_NOTIFICATION_TOKEN,
+        roomId: configuration.HIPCHAT_ROOM_ID
+      });
+    }
   }
 }
 
