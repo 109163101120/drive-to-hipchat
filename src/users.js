@@ -124,14 +124,15 @@ function removeUsers (localUsers, remoteUsers) {
 function sync () {
   console.log('Syncing users');
   return Promise.all([
+    db.about.touchLastUserSync(),
     listLocalUsers(),
     listRemoteUsers()
-  ]).spread(function (localUsers, remoteUsers) {
+  ]).spread(function (_, localUsers, remoteUsers) {
     return Promise.all([
       createUsers(localUsers, remoteUsers),
       removeUsers(localUsers, remoteUsers)
     ]);
-  }).then(db.about.touchLastUserSync);
+  });
 }
 
 module.exports = {
