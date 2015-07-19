@@ -73,7 +73,15 @@ function listRemoteUsers () {
       auth: auth,
       domain: configuration.GOOGLE_DOMAIN
     });
-  });
+  }).filter(notSuspended);
+
+  /**
+   * @param {!Object}
+   * @return {boolean}
+   */
+  function notSuspended (user) {
+    return !user.suspended;
+  }
 }
 
 /**
