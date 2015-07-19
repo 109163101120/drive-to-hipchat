@@ -77,9 +77,9 @@ synchronize users.
    `GOOGLE_SITE_VERIFICATION` configuration option
 1. In your terminal, set the `GOOGLE_SITE_VERIFICATION` configuration option
 
-       ```bash
-       $ heroku config:set GOOGLE_SITE_VERIFICATION=googleb9b366cb901b7d5f.html
-       ```
+   ```bash
+   $ heroku config:set GOOGLE_SITE_VERIFICATION=googleb9b366cb901b7d5f.html
+   ```
 1. Click **Verify** in the Google Search Console
 
 ### Allow changes to be pushed to Heroku
@@ -95,12 +95,12 @@ synchronize users.
 1. In your terminal, run `heroku pg:psql` (`psql` must be on your `PATH`)
 1. Create the following four tables
 
-       ```sql
-       CREATE TABLE about (last_user_sync BIGINT);
-       CREATE TABLE channels (expires BIGINT, id VARCHAR(255), resource_id VARCHAR(255), user_id VARCHAR(255));
-       CREATE TABLE files (id VARCHAR(255) UNIQUE, public BOOLEAN);
-       CREATE TABLE users (id VARCHAR(255), email VARHCAR(255));
-       ```
+   ```sql
+   CREATE TABLE about (last_user_sync BIGINT);
+   CREATE TABLE channels (expires BIGINT, id VARCHAR(255), resource_id VARCHAR(255), user_id VARCHAR(255));
+   CREATE TABLE files (id VARCHAR(255) UNIQUE, public BOOLEAN);
+   CREATE TABLE users (id VARCHAR(255), email VARHCAR(255));
+   ```
 
 ### Create HipChat API tokens
 
@@ -129,24 +129,24 @@ synchronize users.
    characters in the service account's private key (e.g. `\n`) and that its line
    breaks are preserved
 
-       ```bash
-       $ heroku config:set KEY=VALUE
-       ```
+   ```bash
+   $ heroku config:set KEY=VALUE
+   ```
 
 ### Ping the app
 
 1. In your terminal, ping the app to initiate user synchronisation and channel
    creation
 
-       ```bash
-       $ curl -XPOST https://my-app.herokuapp.com/ping
-       ```
+   ```bash
+   $ curl -XPOST https://my-app.herokuapp.com/ping
+   ```
 1. If everything is working correctly, you will see notification requests in the
    app's logs
 
-       ```bash
-       $ heroku logs
-       ```
+   ```bash
+   $ heroku logs
+   ```
 1. Create a document in your Google Drive account, then make it visible to
    everyone in the domain (without a link) — it should appear in the HipChat
    room
