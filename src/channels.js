@@ -24,6 +24,7 @@ function authenticate (email) {
  * @return {!Promise}
  */
 function createChannel (user) {
+  console.log('Creating channel for ' + user.email);
   return watchChanges()
       .then(storeChannel);
 
@@ -68,6 +69,7 @@ function createNewChannels () {
  */
 function recreateChannel (channel) {
   return db.users.get(channel.user_id).then(function (user) {
+    console.log('Recreating channel for ' + user.email);
     return createChannel(user)
         .then(removeChannel.bind(null, channel, user));
   });

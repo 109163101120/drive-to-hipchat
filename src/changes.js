@@ -119,6 +119,12 @@ function handleFileChange (file, permissions) {
         wasShared = wasPublic === false;
 
     if (isNew || wasShared) {
+      console.log('Sending HipChat notification');
+      console.log('isNew: ' + isNew);
+      console.log('wasShared: ' + wasShared);
+      console.log(JSON.stringify(file, null, 2));
+      console.log(JSON.stringify(permissions, null, 2));
+
       hipchat.rooms.notifications.send({
         color: 'yellow',
         message: makeHipChatMessage(file),
