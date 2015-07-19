@@ -1,4 +1,5 @@
 module.exports = {
+  // Set by Heroku
   DATABASE_URL: process.env.DATABASE_URL,
 
   // The email address of an admin account in the domain
@@ -23,9 +24,11 @@ module.exports = {
   // A HipChat API token with send_notification scope
   HIPCHAT_NOTIFICATION_TOKEN: process.env.HIPCHAT_NOTIFICATION_TOKEN,
 
-  // The URL to which drive push notifications should be sent
+  // The URL to which drive push notifications should be sent (e.g.
+  // https://my-app.herokuapp.com/notifications)
   NOTIFICATION_URL: process.env.NOTIFICATION_URL,
 
-  // The URL to which pings should be sent
+  // The URL to which pings should be sent (e.g.
+  // https://my-app.herokuapp.com/pings)
   PING_URL: process.env.PING_URL
 };
