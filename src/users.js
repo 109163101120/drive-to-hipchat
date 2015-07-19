@@ -24,7 +24,6 @@ function authenticate () {
  */
 function createUsers (localUsers, remoteUsers) {
   var newUsers = remoteUsers.filter(notPresentLocally);
-  console.log('Creating ' + newUsers.length + ' user(s)');
   return Promise.all(newUsers.map(createUser));
 
   /**
@@ -96,7 +95,6 @@ function maybeSync () {
  */
 function removeUsers (localUsers, remoteUsers) {
   var removedUsers = localUsers.filter(notPresentRemotely);
-  console.log('Removing ' + removedUsers.length + ' user(s)');
   return db.users.remove(removedUsers.map(getId));
 
   /**
@@ -122,7 +120,6 @@ function removeUsers (localUsers, remoteUsers) {
  * @return {!Promise}
  */
 function sync () {
-  console.log('Syncing users');
   return Promise.all([
     db.about.touchLastUserSync(),
     listLocalUsers(),
