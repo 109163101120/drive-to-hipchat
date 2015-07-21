@@ -54,13 +54,14 @@ function getFilePermissions (auth, id) {
 /**
  * @param {!Object} change
  * @param {string} channelId
+ * @return {!Promise}
  */
 function handleChange (change, channelId) {
   console.log('Handling change ' + change.id + ' for channel ' + channelId);
-  authenticate(channelId).then(function (auth) {
-    getChange(auth, change.id).then(function (change) {
-      getFilePermissions(auth, change.file.id).then(function (permissions) {
-        handleFileChange(change.file, permissions.items);
+  return authenticate(channelId).then(function (auth) {
+    return getChange(auth, change.id).then(function (change) {
+      return getFilePermissions(auth, change.file.id).then(function (permissions) {
+        return handleFileChange(change.file, permissions.items);
       });
     });
   });
@@ -69,12 +70,13 @@ function handleChange (change, channelId) {
 /**
  * @param {!Object} file
  * @param {!Array<!Object>} permissions
+ * @return {!Promise}
  */
 function handleFileChange (file, permissions) {
   if (!isPublic()) {
-    db.files.setPublic(file.id, false);
+    return db.files.setPublic(file.id, false);
   } else {
-    db.files.isPublic(file.id)
+    return db.files.isPublic(file.id)
         .tap(makePublic)
         .then(maybeSendHipChatNotification);
   }
@@ -114,6 +116,7 @@ function handleFileChange (file, permissions) {
 
   /**
    * @param {boolean|undefined} wasPublic
+   * @return {!Promise|undefined}
    */
   function maybeSendHipChatNotification (wasPublic) {
     var isNew = file.createdDate === file.modifiedDate && wasPublic === undefined,
@@ -126,7 +129,7 @@ function handleFileChange (file, permissions) {
       console.log(JSON.stringify(file, null, 2));
       console.log(JSON.stringify(permissions, null, 2));
 
-      hipchat.rooms.notifications.send({
+      return hipchat.rooms.notifications.send({
         color: 'yellow',
         message: makeHipChatMessage(file),
         messageFormat: 'html',
