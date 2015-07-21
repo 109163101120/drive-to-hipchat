@@ -18,23 +18,14 @@ app.use(route.get('/' +  googleSiteVerification, function * () {
 
 app.use(route.post('/notifications', function * () {
   var channelId = this.headers['x-goog-channel-id'],
-      isSync = this.headers['x-goog-resource-state'] === 'sync',
-      me = this;
+      isSync = this.headers['x-goog-resource-state'] === 'sync';
 
-  handleChange().finally(respond);
-
-  /**
-   * @return {!Promise}
-   */
-  function handleChange () {
-    return isSync
-        ? Promise.resolve()
-        : changes.handleChange(me.request.body, channelId);
+  if (!isSync) {
+    yield changes.handleChange(this.request.body, channelId)
+        .catch(function () {});
   }
 
-  function respond () {
-    me.body = '';
-  }
+  this.body = '';
 }));
 
 app.use(route.post('/pings', function * () {
