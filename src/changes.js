@@ -73,12 +73,21 @@ function handleChange (change, channelId) {
  * @return {!Promise}
  */
 function handleFileChange (file, permissions) {
-  if (!isPublic()) {
+  if (!isGoogleAppsDocument()) {
+    return Promise.resolve();
+  } else if (!isPublic()) {
     return db.files.setPublic(file.id, false);
   } else {
     return db.files.isPublic(file.id)
         .tap(makePublic)
         .then(maybeSendHipChatNotification);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  function isGoogleAppsDocument () {
+    return /application\/vnd\.google-apps/.test(file.mimeType);
   }
 
   /**
