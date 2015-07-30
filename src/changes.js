@@ -84,7 +84,11 @@ function handleFileChange (file, permissions) {
    * @return {boolean}
    */
   function isGoogleAppsDocument () {
-    return /application\/vnd\.google-apps/.test(file.mimeType);
+    return [
+      'application/vnd.google-apps.document',
+      'application/vnd.google-apps.presentation',
+      'application/vnd.google-apps.spreadsheet'
+    ].indexOf(file.mimeType) > -1;
   }
 
   /**
