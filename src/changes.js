@@ -57,7 +57,6 @@ function getFilePermissions (auth, id) {
  * @return {!Promise}
  */
 function handleChange (change, channelId) {
-  console.log('Handling change ' + change.id + ' for channel ' + channelId);
   return authenticate(channelId).then(function (auth) {
     return getChange(auth, change.id).then(function (change) {
       return getFilePermissions(auth, change.file.id).then(function (permissions) {
