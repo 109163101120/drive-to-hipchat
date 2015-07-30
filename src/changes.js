@@ -118,6 +118,7 @@ function handleFileChange (file, permissions) {
    * @return {!Promise}
    */
   function markVisibility (wasPublic) {
+    // Only set the initial state or upgrade to public, never downgrade
     if (isPublic()) {
       return db.files.setPublic(file.id, true);
     } else if (wasPublic === undefined) {
@@ -131,9 +132,9 @@ function handleFileChange (file, permissions) {
    */
   function maybeSendHipChatNotification (wasPublic) {
     var isNew = file.createdDate === file.modifiedDate && wasPublic === undefined,
-        wasShared = isPublic() && wasPublic === false;
+        wasShared = wasPublic === false;
 
-    if (isNew || wasShared) {
+    if (isPublic() && (isNew || wasShared)) {
       console.log('Sending HipChat notification');
       console.log('isNew: ' + isNew);
       console.log('wasShared: ' + wasShared);
