@@ -134,6 +134,11 @@ function handleFileChange (file, permissions) {
     var isNew = file.createdDate === file.modifiedDate && wasPublic === undefined,
         wasShared = wasPublic === false;
 
+    if (wasPublic === undefined) {
+      console.log(JSON.stringify(file, null, 2));
+      console.log(JSON.stringify(permissions, null, 2));
+    }
+
     if (isPublic() && (isNew || wasShared)) {
       console.log('Sending HipChat notification');
       console.log('isNew: ' + isNew);
