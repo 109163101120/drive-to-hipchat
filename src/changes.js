@@ -74,13 +74,11 @@ function handleChange (change, channelId) {
 function handleFileChange (file, permissions) {
   if (!isGoogleAppsDocument()) {
     return Promise.resolve();
-  } else if (!isPublic()) {
-    return db.files.setPublic(file.id, false);
-  } else {
-    return db.files.isPublic(file.id)
-        .tap(makePublic)
-        .then(maybeSendHipChatNotification);
   }
+
+  return db.files.isPublic(file.id)
+      .tap(markVisibility)
+      .then(maybeSendHipChatNotification);
 
   /**
    * @return {boolean}
@@ -116,10 +114,15 @@ function handleFileChange (file, permissions) {
   }
 
   /**
+   * @param {boolean|undefined} wasPublic
    * @return {!Promise}
    */
-  function makePublic () {
-    return db.files.setPublic(file.id, true);
+  function markVisibility (wasPublic) {
+    if (isPublic()) {
+      return db.files.setPublic(file.id, true);
+    } else if (wasPublic === undefined) {
+      return db.files.setPublic(file.id, false);
+    }
   }
 
   /**
@@ -128,7 +131,7 @@ function handleFileChange (file, permissions) {
    */
   function maybeSendHipChatNotification (wasPublic) {
     var isNew = file.createdDate === file.modifiedDate && wasPublic === undefined,
-        wasShared = wasPublic === false;
+        wasShared = isPublic() && wasPublic === false;
 
     if (isNew || wasShared) {
       console.log('Sending HipChat notification');
