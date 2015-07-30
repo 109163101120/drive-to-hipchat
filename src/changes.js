@@ -106,6 +106,14 @@ function handleFileChange (file, permissions) {
   /**
    * @return {boolean}
    */
+  function isLessThanOneMinuteOld () {
+    var ONE_MINUTE = 1000 * 60;
+    return (Date.now() - Date.parse(file.createdDate)) < ONE_MINUTE;
+  }
+
+  /**
+   * @return {boolean}
+   */
   function isPublic () {
     return permissions.some(function (permission) {
       return isGloballyPublic(permission)
@@ -131,17 +139,12 @@ function handleFileChange (file, permissions) {
    * @return {!Promise|undefined}
    */
   function maybeSendHipChatNotification (wasPublic) {
-    var isNew = file.createdDate === file.modifiedDate && wasPublic === undefined,
-        wasShared = wasPublic === false;
+    var wasCreated = isLessThanOneMinuteOld() && isPublic() && wasPublic === undefined,
+        wasShared = isPublic() && wasPublic === false;
 
-    if (wasPublic === undefined) {
-      console.log(JSON.stringify(file, null, 2));
-      console.log(JSON.stringify(permissions, null, 2));
-    }
-
-    if (isPublic() && (isNew || wasShared)) {
+    if (wasCreated || wasShared) {
       console.log('Sending HipChat notification');
-      console.log('isNew: ' + isNew);
+      console.log('wasCreated: ' + wasCreated);
       console.log('wasShared: ' + wasShared);
       console.log(JSON.stringify(file, null, 2));
       console.log(JSON.stringify(permissions, null, 2));
