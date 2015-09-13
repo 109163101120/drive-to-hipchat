@@ -1,16 +1,16 @@
-# drive-hipchat
+# drive-to-hipchat
 
 Posts notifications to a HipChat room whenever a Google Drive document is made
 public.
 
 ## How does it work?
 
-First, let's consider how drive-hipchat watches the Google Drive documents of a
+First, let's consider how drive-to-hipchat watches the Google Drive documents of a
 single user.
 
 1. Authenticate with the Google Drive API as the user
 1. Create a [changes channel](https://developers.google.com/drive/v2/reference/changes/watch)
-   so drive-hipchat is notified when any of the user's files are modified
+   so drive-to-hipchat is notified when any of the user's files are modified
 1. On receiving a change notification
     1. Upgrade the file's visibility (i.e. if its visibility has increased
        since we last saw it, record the new value)
@@ -19,7 +19,7 @@ single user.
     1. If the file was private last time we saw it, send a HipChat notification
 1. Periodically recreate the changes channel so it doesn't expire
 
-Now, how drive-hipchat watches the documents of all users in a domain.
+Now, how drive-to-hipchat watches the documents of all users in a domain.
 
 1. Use the [admin directory API](https://developers.google.com/admin-sdk/directory/v1/reference/users/list)
    to list all users in the domain
@@ -29,7 +29,7 @@ Now, how drive-hipchat watches the documents of all users in a domain.
 
 Because I'm cheap (I don't want to pay for the dynos required by Heroku's
 scheduler add-on), periodic synchronization is implemented with a HipChat
-`room_enter` webhook that pings drive-hipchat whenever someone enters the
+`room_enter` webhook that pings drive-to-hipchat whenever someone enters the
 destination HipChat room. This gives it an opportunity to recreate channels and
 synchronize users.
 
@@ -70,7 +70,7 @@ sleep per day.
 ### Create a Heroku app
 
 1. Create a new app
-1. Push the drive-hipchat code
+1. Push the drive-to-hipchat code
 1. Note your app's URL
 
 ### Verify ownership of the domain
