@@ -12,7 +12,8 @@ single user.
 1. Create a [changes channel](https://developers.google.com/drive/v2/reference/changes/watch)
    so drive-hipchat is notified when any of the user's files are modified
 1. On receiving a change notification
-    1. Record the file's visibility
+    1. Upgrade the file's visibility (i.e. if its visibility has increased
+       since we last saw it, record the new value)
     1. If the file is private, return
     1. If the file is new, send a HipChat notification
     1. If the file was private last time we saw it, send a HipChat notification
@@ -31,6 +32,12 @@ scheduler add-on), periodic synchronization is implemented with a HipChat
 `room_enter` webhook that pings drive-hipchat whenever someone enters the
 destination HipChat room. This gives it an opportunity to recreate channels and
 synchronize users.
+
+## How much does it cost?
+
+The code it free, hosting may not be. It costs me $7/month to run an
+instance on Heroku. I can't use a free dyno as they require 6 hours of
+sleep per day.
 
 ## Setup
 
