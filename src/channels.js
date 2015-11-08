@@ -91,7 +91,7 @@ function recreateExpiringChannels () {
  */
 function removeChannel (channel, user) {
   return stopChannel()
-      .catch()
+      .catch(function () {})
       .then(dropChannel);
 
   /**
@@ -124,6 +124,40 @@ function refresh () {
       .then(createNewChannels);
 }
 
+/**
+ * @return {!Promise}
+ */
+function removeAll () {
+  return db.channels.list().then(function (channels) {
+    return getUserMap().then(function (userMap) {
+      var index = 0;
+      return (function removeNextChannel () {
+        console.log('Removing channel ' + (index + 1) + '/' + channels.length);
+
+        var channel = channels[index];
+        var user = userMap[channel.user_id];
+        return removeChannel(channel, user).then(function () {
+          index++;
+          return removeNextChannel();
+        });
+      }(0));
+    });
+  });
+
+  /**
+   * @return {!Promise<!Object<!Object>>}
+   */
+  function getUserMap() {
+    return db.users.list().then(function (users) {
+      return users.reduce(function (userMap, user) {
+        userMap[user.id] = user;
+        return userMap;
+      }, {});
+    });
+  }
+}
+
 module.exports = {
-  refresh: refresh
+  refresh: refresh,
+  removeAll: removeAll
 };

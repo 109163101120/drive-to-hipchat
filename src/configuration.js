@@ -15,20 +15,16 @@ module.exports = {
   // Site verification code from the Google Search Console
   GOOGLE_SITE_VERIFICATION: process.env.GOOGLE_SITE_VERIFICATION,
 
-  // A HipChat API token with the admin_room scope
-  HIPCHAT_ROOM_ADMIN_TOKEN: process.env.HIPCHAT_ROOM_ADMIN_TOKEN,
-
-  // The ID of the HipChat room to send notifications to
-  HIPCHAT_ROOM_ID: parseInt(process.env.HIPCHAT_ROOM_ID, 10),
-
-  // A HipChat API token with send_notification scope
-  HIPCHAT_NOTIFICATION_TOKEN: process.env.HIPCHAT_NOTIFICATION_TOKEN,
-
   // The URL to which drive push notifications should be sent (e.g.
   // https://my-app.herokuapp.com/notifications)
   NOTIFICATION_URL: process.env.NOTIFICATION_URL,
 
-  // The URL to which pings should be sent (e.g.
-  // https://my-app.herokuapp.com/pings)
-  PING_URL: process.env.PING_URL
+  // The Slack API token to use
+  SLACK_API_TOKEN: process.env.SLACK_API_TOKEN,
+
+  // The ID of the Slack channel to post to
+  SLACK_CHANNEL_ID: process.env.SLACK_CHANNEL_ID,
+
+  // The usernam to use when posting messages to Slack
+  SLACK_USERNAME: process.env.SLACK_USERNAME
 };

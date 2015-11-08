@@ -1,8 +1,7 @@
 var configuration = require('./configuration'),
     db = require('./db'),
     google = require('./google'),
-    hipchat = require('./hipchat'),
-    mustache = require('mustache');
+    slack = require('./slack');
 
 /**
  * @param {string} channelId
@@ -78,7 +77,7 @@ function handleFileChange (file, permissions) {
 
   return db.files.isPublic(file.id)
       .tap(markVisibility)
-      .then(maybeSendHipChatNotification);
+      .then(maybePostSlackMessage);
 
   /**
    * @return {boolean}
@@ -142,48 +141,31 @@ function handleFileChange (file, permissions) {
    * @param {boolean|undefined} wasPublic
    * @return {!Promise|undefined}
    */
-  function maybeSendHipChatNotification (wasPublic) {
+  function maybePostSlackMessage (wasPublic) {
     var wasCreated = isLessThanOneMinuteOld() && isPublic() && wasPublic === undefined,
         wasShared = isPublic() && wasPublic === false;
 
     if (wasCreated || wasShared) {
-      console.log('Sending HipChat notification');
+      console.log('Posting Slack message');
       console.log('wasCreated: ' + wasCreated);
       console.log('wasShared: ' + wasShared);
       console.log(JSON.stringify(file, null, 2));
       console.log(JSON.stringify(permissions, null, 2));
 
-      return hipchat.rooms.notifications.send({
-        color: 'yellow',
-        message: makeHipChatMessage(file),
-        messageFormat: 'html',
-        notify: true,
-        token: configuration.HIPCHAT_NOTIFICATION_TOKEN,
-        roomId: configuration.HIPCHAT_ROOM_ID
+      return slack.chat.postMessage({
+        attachments: [{
+          author_icon: file.owners[0].picture.url,
+          author_name: file.owners[0].displayName,
+          fallback: file.title,
+          title: file.title,
+          title_link: file.alternateLink
+        }],
+        channel: configuration.SLACK_CHANNEL_ID,
+        token: configuration.SLACK_API_TOKEN,
+        username: configuration.SLACK_USERNAME
       });
     }
   }
-}
-
-/**
- * @param {!Object} file
- * @return {string}
- */
-function makeHipChatMessage (file) {
-  var template;
-
-  template = [
-    '<img src="{{ iconUrl }}">',
-    '<a href="{{ documentUrl }}">{{ documentTitle }}</a>',
-    'by {{ ownerName }}'
-  ].join(' ');
-
-  return mustache.render(template, {
-    documentTitle: file.title,
-    documentUrl: file.alternateLink,
-    iconUrl: file.iconLink,
-    ownerName: file.ownerNames[0]
-  });
 }
 
 module.exports = {

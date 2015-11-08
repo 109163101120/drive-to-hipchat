@@ -4,7 +4,6 @@ var app = require('koa')(),
     channels = require('./channels'),
     configuration = require('./configuration'),
     googleSiteVerification = configuration.GOOGLE_SITE_VERIFICATION,
-    pings = require('./pings'),
     port = Number(process.env.PORT || 8080),
     route = require('koa-route'),
     users = require('./users');
@@ -25,14 +24,23 @@ app.use(route.post('/notifications', function * () {
         .catch(function () {});
   }
 
+  yield ping();
   this.body = '';
 }));
 
-app.use(route.post('/pings', function * () {
+app.use(route.post('/ping', function * () {
+  yield ping();
   this.body = '';
-  pings.refresh();
-  users.maybeSync()
-      .then(channels.refresh);
+}));
+
+app.use(route.post('/channels/remove', function * () {
+  yield channels.removeAll();
+  this.body = '';
 }));
 
 app.listen(port);
+
+function ping() {
+  return users.maybeSync()
+      .then(channels.refresh);
+}
